@@ -1,0 +1,12 @@
+# ignore VC files
+.vscode/
+
+# ignore pycache folder
+__pycache__
+
+# ignore data folder
+/data/
+
+# ignore apikey, test files
+apikeys.py
+test.py
