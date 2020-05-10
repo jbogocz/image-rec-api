@@ -16,6 +16,14 @@ api = Api(app)
 client = MongoClient('mongodb://db:27017')
 
 # Create new database
-db = clinet.ImageRecognition
+db = client.ImageRecognition
 users = db['Users']
+
+# Check if user exists in database
+def UserExist(username):
+    # Find query username in MongoDB
+    if users.find({'Username':username}).count()==0
+        return False
+    else:
+        return True
 
