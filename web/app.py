@@ -96,3 +96,52 @@ def verifyCredentials(username, password):
 
     return None, False
 
+# Recognize provided image and return answer to the user
+class Classify(Resource):
+    # json from POST
+    def post(self):
+        postedData = request.get_json()
+        # get username, pass & image url
+        username = postedData['username']
+        password = postedData['password']
+        ur = postedData['url']
+
+        # verify credentials from user
+        retJson, error = verifyCredentials(username, password)
+        if error:
+            return jsonify(retJson)
+
+        # check if user has enough tokens
+        tokens = user.find({
+            'Username': username
+        })[0]['Tokens']
+
+        if tokens <= 0:
+            return jsonify(generateReturnDictionary(303, 'Not Enough Tokens!'))
+
+        # get content of url
+        r = requests.get(url)
+        # create empty dictionary
+        retJson = {}
+        # write url content to the temporary file
+        with open('temp.jpg', 'wb') as f:
+            f.write(r.content)
+            # open new subprocess with tensorflow file & pass args
+            proc = subprocess.Popen(
+                'python classify_image.py --model_dir=. --image_file=./temp.jpg')
+            proc.communicate()[0]
+            proc.wait()
+            # load dictionary which was stored in text.txt
+            with open('text.txt') as g:
+                retJson = json.load(g)
+        # Substract one token from user
+        users.update({
+            'Username': username
+        }, {
+            '$set': {
+                'Tokens': tokens-1
+            }
+        })
+        # Return response to the user
+        return retJson
+
