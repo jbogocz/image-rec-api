@@ -8,3 +8,6 @@ import bcrypt
 # import numpy as np
 import tensorflow as tf
 
+app = Flask(__name__)
+api = Api(app)
+
