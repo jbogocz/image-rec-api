@@ -145,3 +145,32 @@ class Classify(Resource):
         # Return response to the user
         return retJson
 
+# Refill tokens for user
+class Refill(Resource):
+    # json from POST
+    def post(self):
+        postedData = request.get_json()
+
+        username = postedData['username']
+        password = postedData['admin_pw']
+        amount = postedData['amount']
+
+        # Check if admin exists
+        if not UserExist(username):
+            return jsonify(generateReturnDictionary(301, 'Invalid Username'))
+        # Check if admin pass is correct
+        correct_pw = 'admin1'  # just for now, should be hashed and stored in DB
+        if not password == correct_pw:
+            return jsonify(
+                generateReturnDictionary(304, 'Invalid Administrator Password'))
+        # refill user tokens
+        users.update({
+            'Username': username
+        }, {
+            '$set': {
+                'Tokens': amount
+            }
+        })
+        return jsonify(generateReturnDictionary(200, 'Refilled Successfully'))
+
+
