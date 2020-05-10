@@ -76,3 +76,11 @@ def verify_pw(username, password):
     else:
         return False
 
+# Generate return dictionary for user
+def generateReturnDictionary(status, msg):
+    retJson = {
+        'status': status,
+        'msg': msg
+    }
+    return retJson
+
