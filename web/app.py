@@ -60,3 +60,19 @@ class Register(Resource):
             'msg': 'You successfully signed up for this API'
         }
         return jsonify(retJson)
+
+# Verify user hashed password
+def verify_pw(username, password):
+    # Check if user exists
+    if not UserExist(username):
+        return False
+    # get hashed pass
+    hashed_pw = users.find({
+        'Username': username
+    })[0]['Password']
+    # match hashed passwords user provide vs stored in mongodb
+    if bcrypt.hashpw(password.endcode('utf8'), hashed_pw) == hashed_pw:
+        return True
+    else:
+        return False
+
