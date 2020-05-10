@@ -15,3 +15,7 @@ api = Api(app)
 # Connect to the MongoDB client with default port
 client = MongoClient('mongodb://db:27017')
 
+# Create new database
+db = clinet.ImageRecognition
+users = db['Users']
+
